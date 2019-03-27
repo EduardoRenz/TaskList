@@ -1,29 +1,34 @@
-# tasklist
+# TaskList
 
-## Project setup
+Sistema de criação de lista de tarefas
+
+##Projeto desenvolvido usando as seguintes linguagens e plugins
+
+- Vue.js
+- Vuetiify
+- PHP
+- Mysql
+
+## Configurações do projeto
 ```
+# Instalar dependências do front-end
+cd frontend
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Compilar front-end com hot reload para desenvolvimento
 ```
+cd frontend
 npm run serve
 ```
 
-### Compiles and minifies for production
+### Compilar para produção
 ```
+cd frontend
 npm run build
 ```
 
-### Run your tests
-```
-npm run test
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
