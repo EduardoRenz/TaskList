@@ -29,48 +29,52 @@
 
 <script>
   import TaskList from '@/components/TaskList'
+  import Api from '@/services/api'
   export default {
     components:{TaskList },
     data: () => ({
       dialog:false,
       lists:[
-        { title:'Tafefas de casa', 
-          editing:false,
-          items:[
-            { task:'Tarefa de casa', order:1 ,completed:false},
-            { task:'Limpar o quarto', order:1, completed:false}
-        ]},
-        { title:'Viagem', 
-          editing:false,
-          items:[
-            { task:'Comprar passagens', order:1 ,completed:false},
-            { task:'Agendar Hotel', order:1, completed:false}
-        ]}
+        // { title:'Tarefa Offline de exemplo', 
+        //   editing:false,
+        //   tasks:[
+        //     { task:'Não foi possivel carregar as tarefas do banco', order:1 ,completed:false},
+        // ]},
+       
       ],
-      newList:{ title:'Nova Lista',editing:true,items:[] }
+      newList:{ title:'Nova Lista',editing:true,tasks:[] }
     }),
     methods:{
       addTask(){
         this.lists.push(this.newList )
-        this.newList = { title:'Nova Lista',editing:true,items:[] }
+        this.newList = { title:'Nova Lista',editing:true,tasks:[] }
       },
       deleteList(idx){
         this.lists.splice(idx,1)
-      },
-      dragged(evt){
-
-        console.log('dragou')
-        console.log(evt.target)
-    }
+      }
     },
 
-    beforeMount(){
-      // document.addEventListener('mousemove',ev=>{
-      //   console.log(ev)
-      //   this.mouse.x = ev.clientX
-      //   this.mouse.y = ev.clientY
+    async beforeMount(){
+      try {
+         let result = await Api().get('')
 
-      // })
+         //Configuração de editing para o front-end
+         for (const item of result.data) {
+            item.editing = false
+            for (const task of item.tasks) {
+              task.completed = task.completed = "0" ? false : true
+            }
+
+         }
+
+
+         this.lists = result.data
+
+      } catch (error) {
+        console.log(error)
+        alert('Erro ao obter listas',error.message)
+      }
+
     }
   }
 </script>
