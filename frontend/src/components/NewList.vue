@@ -10,7 +10,7 @@
           single-line
           flat
           :solo="!list.editing"
-          v-on:keyup.13.native="list.editing = false,editList(list)"
+          v-on:keyup.13.native="list.editing = false"
           class="text-xs-center"
         ></v-text-field>
 
@@ -24,21 +24,14 @@
           </template>
           <span>Editar Titulo</span>
         </v-tooltip>
-        <v-tooltip bottom >
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" @click="deleteList()">
-              <v-icon color="red">delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Excluir lista</span>
-        </v-tooltip>
+
       </v-card-title>
       <v-divider></v-divider>
       <v-list-tile v-for="(item,idx) in filteredList" v-bind:key="idx" class="list-item">
-        <v-list-tile-action @click="editList(list),item.completed = !item.completed ">
-          <v-checkbox v-model="item.completed" color="primary" disabled ></v-checkbox>
+        <v-list-tile-action @click="item.completed = !item.completed ">
+          <v-checkbox v-model="item.completed" color="primary" disabled></v-checkbox>
         </v-list-tile-action>
-        <v-list-tile-content @click="editList(list),item.completed = !item.completed ">
+        <v-list-tile-content @click="item.completed = !item.completed ">
           <v-list-tile-title v-bind:class="{completed : item.completed}">{{item.task}}</v-list-tile-title>
         </v-list-tile-content>
         <v-tooltip bottom>
@@ -61,9 +54,9 @@
         class="list-item"
       >
         <v-list-tile-action>
-          <v-checkbox v-model="item.completed" color="primary"></v-checkbox>
+          <v-checkbox v-model="item.completed" disabled color="primary"></v-checkbox>
         </v-list-tile-action>
-        <v-list-tile-content @click="editList(list),item.completed = !item.completed">
+        <v-list-tile-content @click="item.completed = !item.completed">
           <v-list-tile-title v-bind:class="{completed : item.completed}">{{item.task}}</v-list-tile-title>
         </v-list-tile-content>
         <v-tooltip bottom>
@@ -78,12 +71,16 @@
     </v-list>
     <v-card-actions>
       <v-text-field
-        v-model="newTask"
+        v-model="newTask.task"
         single-line
         label="Nova tarefa"
         prepend-icon="add"
         v-on:keyup.13.native="addItem()"
       ></v-text-field>
+    </v-card-actions>
+    <v-card-actions >
+      <v-btn @click="$emit('cancel')" color="error">Cancelar</v-btn>
+      <v-btn @click="addList()" color="success">Concluído</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -91,40 +88,33 @@
 <script>
 import Api from "@/services/api";
 export default {
-  props: ["list"],
   data() {
     return {
-      newTask: ""
+      newTask: {task:'',completed:false},
+       list: { title:'Nova Lista', 
+          editing:true,
+          tasks:[
+          //  { task:'Nova tarefa', order:1 ,completed:false},
+        ]},
+       
     };
   },
   methods: {
-    deleteList() {
-      this.$emit("deleted", this.list);
+    addList(){
+        this.$emit('addList',this.list)
+        this.list = { title:'Nova Lista', 
+          editing:true,
+          tasks:[
+            // { task:'Não foi possivel carregar as tarefas do banco', order:1 ,completed:false},
+        ]}
     },
     addItem() {
-      if (this.newTask.trim() != "")
-        this.list.tasks.push({ completed: false, task: this.newTask });
-        this.editList({id:this.list.id,title:this.list.title,tasks:[{task:this.newTask,completed:false}]})
-        this.newTask = "";
-
-    },
-    async deleteTask(item,idx){
-      try {
-        await Api().delete(`/task/${item.id}`)
-        this.list.tasks.splice(idx,1)
-      } catch (error) {
-          alert('Erro ao deletar item da lista',error)
-      }
-
+      if (this.newTask.task.trim() != "")
+        this.list.tasks.push(this.newTask );
+        this.newTask = {task:'',completed:false};
     },
 
-    async editList(list) {
-      try {
-        await Api().put(`/${list.id}`, list);
-      } catch (error) {
-        alert("Erro ao editar lista", error.message);
-      }
-    }
+
   },
   computed: {
     filteredList() {

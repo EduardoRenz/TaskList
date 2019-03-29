@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xl>
       <v-dialog v-model="dialog" persistent  max-width="600px" >
-      <TaskList :list="newList" :modal="true" v-on:cancel="dialog=false" v-on:addTask="addTask(), dialog=false" />
+      <NewList  v-on:cancel="dialog=false" v-on:addList="(list)=>{addList(list)}" />
     </v-dialog>
       <div>
         <h1 class="display-2 font-weight-bold mb-3 text-xs-center ">
@@ -13,7 +13,7 @@
         </p>
         <v-layout  text-xs-center wrap   >
           <v-flex v-for="(list,idx) in lists" v-bind:key="idx" md4 >
-            <TaskList :list="list" v-on:deleted="(e)=>{ deleteList(idx)}"/>
+            <TaskList :list="list" v-on:deleted="(e)=>{ deleteList(list,idx)}"/>
           </v-flex>
         </v-layout>
           <v-tooltip top>
@@ -29,9 +29,10 @@
 
 <script>
   import TaskList from '@/components/TaskList'
+  import NewList from '@/components/NewList'
   import Api from '@/services/api'
   export default {
-    components:{TaskList },
+    components:{TaskList,NewList },
     data: () => ({
       dialog:false,
       lists:[
@@ -42,15 +43,27 @@
         // ]},
        
       ],
-      newList:{ title:'Nova Lista',editing:true,tasks:[] }
+
     }),
     methods:{
-      addTask(){
-        this.lists.push(this.newList )
-        this.newList = { title:'Nova Lista',editing:true,tasks:[] }
+      async addList(list){
+        try {
+          await Api().post('/',list)
+          this.lists.push(list )
+          this.dialog = false
+        } catch (error) {
+          alert('Erro ao adicionar nova lista')
+        }
+
       },
-      deleteList(idx){
-        this.lists.splice(idx,1)
+      async deleteList(list,idx){
+        try {
+          await Api().delete(`/${list.id}`)
+          this.lists.splice(idx,1)
+        } catch (error) {
+          alert('Erro ao deletar lista')
+        }
+
       }
     },
 
@@ -62,7 +75,7 @@
          for (const item of result.data) {
             item.editing = false
             for (const task of item.tasks) {
-              task.completed = task.completed = "0" ? false : true
+              task.completed = task.completed == 0 ? false : true
             }
 
          }

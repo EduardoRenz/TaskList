@@ -3,11 +3,12 @@
 Sistema de criação de lista de tarefas
 
 ##Projeto desenvolvido usando as seguintes linguagens e plugins
-
+```
 - Vue.js
 - Vuetiify
 - PHP
 - Mysql
+```
 
 ## Configurações do projeto
 ```
@@ -15,6 +16,20 @@ Sistema de criação de lista de tarefas
 cd frontend
 npm install
 ```
+
+# Configuração do Myql (PHP)
+```
+ - Criar schema tasklist
+ - importar o banco com o tasklist.sql
+```
+
+
+# Configuração do Back-end (PHP)
+```
+ Colocar a pasta tasklist em htdocs ou www do apache/wampp
+```
+
+
 
 ### Compilar front-end com hot reload para desenvolvimento
 ```
