@@ -13,7 +13,7 @@
         </p>
         <v-layout  text-xs-center wrap   >
           <v-flex v-for="(list,idx) in lists" v-bind:key="idx" md4 >
-            <TaskList :list="list" v-on:deleted="(e)=>{ deleteList(list,idx)}"/>
+            <TaskList :list="list" v-on:deleted="(e)=>{ deleteList(list,idx)}" v-on:listEdited="loadLists()"/>
           </v-flex>
         </v-layout>
           <v-tooltip top>
@@ -63,31 +63,32 @@
         } catch (error) {
           alert('Erro ao deletar lista')
         }
+      },
+      async loadLists(){
+        try {
+          let result = await Api().get('')
 
+          //Configuração de editing para o front-end
+          for (const item of result.data) {
+              item.editing = false
+              for (const task of item.tasks) {
+                task.completed = task.completed == 0 ? false : true
+              }
+
+          }
+
+
+          this.lists = result.data
+
+        } catch (error) {
+          alert('Erro ao obter listas',error.message)
+        }
       }
     },
 
     async beforeMount(){
-      try {
-         let result = await Api().get('')
 
-         //Configuração de editing para o front-end
-         for (const item of result.data) {
-            item.editing = false
-            for (const task of item.tasks) {
-              task.completed = task.completed == 0 ? false : true
-            }
-
-         }
-
-
-         this.lists = result.data
-
-      } catch (error) {
-        console.log(error)
-        alert('Erro ao obter listas',error.message)
-      }
-
+      this.loadLists()
     }
   }
 </script>

@@ -34,36 +34,11 @@
         </v-tooltip>
       </v-card-title>
       <v-divider></v-divider>
-      <v-list-tile v-for="(item,idx) in filteredList" v-bind:key="idx" class="list-item">
-        <v-list-tile-action @click="editList(list),item.completed = !item.completed ">
-          <v-checkbox v-model="item.completed" color="primary" disabled ></v-checkbox>
+      <v-list-tile v-for="(item,idx) in list.tasks" v-bind:key="idx" class="list-item">
+        <v-list-tile-action >
+          <v-checkbox v-model="item.completed" color="primary"  @change="editList(list)" :checked="item.completed"></v-checkbox>
         </v-list-tile-action>
-        <v-list-tile-content @click="editList(list),item.completed = !item.completed ">
-          <v-list-tile-title v-bind:class="{completed : item.completed}">{{item.task}}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-tooltip bottom>
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on" @click="deleteTask(item,idx)">
-              <v-icon color="red">delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Excluir item</span>
-        </v-tooltip>
-      </v-list-tile>
-    </v-list>
-    <v-list subheader>
-      <!-- {{list.title}} -->
-
-      <v-divider></v-divider>
-      <v-list-tile
-        v-for="(item,idx) in list.tasks.filter(itm=>{return itm.completed})"
-        v-bind:key="idx"
-        class="list-item"
-      >
-        <v-list-tile-action>
-          <v-checkbox v-model="item.completed" color="primary"></v-checkbox>
-        </v-list-tile-action>
-        <v-list-tile-content @click="editList(list),item.completed = !item.completed">
+        <v-list-tile-content >
           <v-list-tile-title v-bind:class="{completed : item.completed}">{{item.task}}</v-list-tile-title>
         </v-list-tile-content>
         <v-tooltip bottom>
@@ -121,22 +96,18 @@ export default {
     async editList(list) {
       try {
         await Api().put(`/${list.id}`, list);
+        this.$emit('listEdited')
       } catch (error) {
         alert("Erro ao editar lista", error.message);
       }
     }
   },
-  computed: {
-    filteredList() {
-      return this.list.tasks.filter(item => {
-        return !item.completed;
-      });
-    }
-  }
+
 };
 </script>
 
 <style>
+.checkbox:disabled { color: green;}
 .completed {
   text-decoration: line-through;
   color: gray;

@@ -7,43 +7,28 @@ Sistema de criação de lista de tarefas
 - Vue.js
 - Vuetiify
 - PHP
+- Composer
 - Mysql
 ```
 
-## Configurações do projeto
-```
-# Instalar dependências do front-end
-cd frontend
-npm install
-```
 
-# Configuração do Myql (PHP)
+
+# Configuração do Myql 
 ```
- - Criar schema tasklist
+ - Criar schema tasklist (ou nome que preferir)
  - importar o banco com o tasklist.sql
 ```
 
 
 # Configuração do Back-end (PHP)
 ```
- Colocar a pasta tasklist em htdocs ou www do apache/wampp
+ - Colocar a pasta tasklist em htdocs ou www do apache/wampp
+ - Mudar as configurações de conexão com Mysql em api/src/setings.php no array "db"
 ```
 
 
+# Testar projeto
 
-### Compilar front-end com hot reload para desenvolvimento
 ```
-cd frontend
-npm run serve
+ - Acessar localhost/tasklist no navegador
 ```
-
-### Compilar para produção
-```
-cd frontend
-npm run build
-```
-
-
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

@@ -86,7 +86,6 @@
 </template>
 
 <script>
-import Api from "@/services/api";
 export default {
   data() {
     return {
@@ -122,7 +121,7 @@ export default {
         return !item.completed;
       });
     }
-  }
+  },
 };
 </script>
 
